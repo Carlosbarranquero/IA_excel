@@ -1,23 +1,24 @@
-Public Function LlamarOllama(p As String) As String
-    Dim h As Object
-    Dim j As String
-    Dim r As String
+# 📊 LlamarOllama: Ejecuta un modelo de IA directamente desde Excel
 
-    ' Escapar caracteres problemáticos
-    j = "{""model"":""llama3.2"",""prompt"":""" & _
-        Replace(Replace(p, "\", "\\"), """", "\""") & _
-        """,""stream"":false}"
+Este módulo VBA permite enviar un *prompt* desde una celda de Excel a un modelo de lenguaje (LLM) alojado localmente con [Ollama](https://ollama.com), y obtener la respuesta directamente en la hoja de cálculo.
 
-    ' Crear petición HTTP
-    Set h = CreateObject("WinHttp.WinHttpRequest.5.1")
-    h.Open "POST", "http://localhost:11434/api/generate", False
-    h.SetRequestHeader "Content-Type", "application/json"
-    h.Send j
+> ✅ No necesitas conexión a internet  
+> ✅ No usas ninguna API externa  
+> ✅ No necesitas programar
 
-    r = h.ResponseText
-   
-    r = Mid(h.ResponseText, InStr(h.ResponseText, """response"":""") + 12)
-    r = Left(r, InStr(r, """") - 1)
-	  r = Replace(r, "\n", "") ' <- Esto quita los \n literales
-    LlamarOllama = Trim(r)
-End Function
+---
+
+## 🚀 ¿Qué hace?
+
+Este módulo define una función personalizada de Excel:  
+`=LlamarOllama("Tu pregunta aquí")`  
+y devuelve la respuesta del modelo configurado localmente (por defecto `llama3.2`).
+
+---
+
+## 🧠 Requisitos
+
+- [Ollama](https://ollama.com) instalado y ejecutándose en tu ordenador  
+- Tener cargado un modelo, por ejemplo:  
+  ```bash
+  ollama run llama3.2
